@@ -48,10 +48,12 @@ export default function Creas() {
   }, []);
 
   async function getLocalizacao() {
+    setLoading(true);
     //pedir permissao ao usuario
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
       Alert.alert("Para usar o app você precisar ativar o GPS");
+      setLoading(false);
     } else {
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
@@ -62,7 +64,6 @@ export default function Creas() {
   }
 
   async function getCreas(latitude, longitude) {
-    setLoading(true);
     await api
       .get(`/creas/latitude/${latitude}/longitude/${longitude}/raio/10`)
       .then(response => {

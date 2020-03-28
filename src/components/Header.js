@@ -59,7 +59,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: colors.primaryColor,
     alignItems: "center",
-    height: 60
+    height: 60,
+    paddingTop: 24
   },
   titulo: {
     fontSize: 28,

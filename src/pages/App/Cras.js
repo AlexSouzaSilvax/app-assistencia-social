@@ -19,7 +19,7 @@ import CardCras from "../../components/Card";
 import { api } from "../../service/api";
 import colors from "../../styles/colors";
 
-export default function Cras({ navigation }) {
+export default function Cras() {
   const [cardPesquisa, setCardPesquisa] = useState(false);
   const [pesquisa, setPesquisa] = useState();
   const [loading, setLoading] = useState();
@@ -45,10 +45,12 @@ export default function Cras({ navigation }) {
   }, []);
 
   async function getLocalizacao() {
+    setLoading(true);
     //pedir permissao ao usuario
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
       Alert.alert("Para usar o app você precisar ativar o GPS");
+      setLoading(false);
     } else {
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
@@ -59,7 +61,6 @@ export default function Cras({ navigation }) {
   }
 
   async function getCras(latitude, longitude) {
-    setLoading(true);
     await api
       .get(`/cras/latitude/${latitude}/longitude/${longitude}/raio/10`)
       .then(response => {
