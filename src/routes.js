@@ -9,6 +9,7 @@ import Load from "./pages/Load";
 
 import Cras from "./pages/App/Cras";
 import Creas from "./pages/App/Creas";
+import PostosSaude from "./pages/App/PostosSaude";
 
 import colors from "./styles/colors";
 
@@ -43,6 +44,19 @@ const Routes = createAppContainer(
               tabBarIcon: ({ focused }) => (
                 <IconFontAwesome
                   name="users"
+                  size={focused ? 24 : 22}
+                  color={focused ? colors.primaryColor : colors.cinza}
+                />
+              )
+            }
+          },
+          PostosSaude: {
+            screen: PostosSaude,
+            navigationOptions: {
+              title: "POSTOS DE SAÚDE",
+              tabBarIcon: ({ focused }) => (
+                <IconFontAwesome
+                  name="hospital-o"
                   size={focused ? 24 : 22}
                   color={focused ? colors.primaryColor : colors.cinza}
                 />

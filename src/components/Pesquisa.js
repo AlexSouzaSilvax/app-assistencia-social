@@ -40,15 +40,16 @@ export default withNavigation(Pesquisa);
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.primaryColor,
-    height: 70,
+    height: 80,
     justifyContent: "center"
   },
   cardPesquisa: {
     flexDirection: "row",
-    height: 50,
+    height: 40,
     width: Dimensions.get("screen").width - 15,
     backgroundColor: colors.white,
     alignSelf: "center",
-    borderRadius: 4
+    borderRadius: 4,
+    marginTop: 24
   }
 });

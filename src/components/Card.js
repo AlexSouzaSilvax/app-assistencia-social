@@ -9,18 +9,39 @@ import {
 } from "react-native";
 import { withNavigation } from "react-navigation";
 import { KEY_API_GOOGLE_MAPS } from "../service/api";
+import colors from "../styles/colors";
 
-function Card({ nome, endereco, latitude, longitude, onPress }) {
+function Card({
+  nome,
+  endereco,
+  telefone,
+  turnoAtendimento,
+  latitude,
+  longitude,
+  onPress
+}) {
   return (
     <View style={styles.card}>
       <Text numberOfLines={1} style={styles.textNome}>
         {nome}
       </Text>
-
       <Text numberOfLines={1} style={styles.textEndereco}>
         {endereco}
       </Text>
-
+      {telefone ? (
+        <Text numberOfLines={1} style={styles.textEndereco}>
+          Tel.: {telefone}
+        </Text>
+      ) : (
+        <></>
+      )}
+      {turnoAtendimento ? (
+        <Text numberOfLines={1} style={styles.textEndereco}>
+          {turnoAtendimento}
+        </Text>
+      ) : (
+        <></>
+      )}
       <TouchableOpacity onPress={onPress}>
         <Image
           style={styles.mapa}
@@ -41,7 +62,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("screen").width - 20,
     margin: 5,
     borderRadius: 4,
-    backgroundColor: "#cfdad8",
+    backgroundColor: colors.primaryLightColor,
     paddingTop: 5
   },
   textTitulo: {

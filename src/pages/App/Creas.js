@@ -65,7 +65,9 @@ export default function Creas() {
 
   async function getCreas(latitude, longitude) {
     await api
-      .get(`/creas/latitude/${latitude}/longitude/${longitude}/raio/10`)
+      .get(
+        `/assistenciasocial/creas/latitude/${latitude}/longitude/${longitude}/raio/100`
+      )
       .then(response => {
         setLoading(false);
         setCreasLista(response.data);
@@ -141,7 +143,7 @@ export default function Creas() {
               <RefreshControl refreshing={loading} onRefresh={getLocalizacao} />
             }
             ListEmptyComponent={
-              <View style={{ marginTop: 20, backgroundColor: colors.white }}>
+              <View style={styles.viewListaVazia}>
                 <Text style={styles.textCrasNaoEncontrado}>
                   Nenhum CREAS encontrado
                 </Text>
@@ -171,5 +173,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     fontSize: 18
+  },
+  viewListaVazia: {
+    marginTop: 20,
+    backgroundColor: colors.primaryLightColor
   }
 });

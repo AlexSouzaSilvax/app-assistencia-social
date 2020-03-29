@@ -15,27 +15,39 @@ import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import Header from "../../components/Header";
 import Pesquisa from "../../components/Pesquisa";
-import CardCras from "../../components/Card";
+import CardPostosSaude from "../../components/Card";
 import { api } from "../../service/api";
 import colors from "../../styles/colors";
 
-export default function Cras() {
+export default function PostosSaude() {
   const [cardPesquisa, setCardPesquisa] = useState(false);
   const [pesquisa, setPesquisa] = useState();
   const [loading, setLoading] = useState();
-  const [crasLista, setCrasLista] = useState();
-  const [crasPesquisa, setCrasPesquisa] = useState();
+  const [postosSaudeLista, setPostosSaudeLista] = useState();
+  const [postosSaudePesquisa, setPostosSaudePesquisa] = useState();
   const parametrosPesquisa = [
-    "gid",
-    "nomeCras",
-    "tipoLogradouro",
-    "endereco",
-    "numero",
+    "bairro",
+    "categoriaUnidade",
     "cep",
-    "nomeMunicipio",
-    "codIbgeMun",
-    "uf",
-    "idCras"
+    "cidade",
+    "cnpj",
+    "cep",
+    "codCnes",
+    "codIbge",
+    "codUnidade",
+    "descricaoCompleta",
+    "esferaAdministrativa",
+    "fluxoClientela",
+    "logradouro",
+    "natureza",
+    "nomeFantasia",
+    "numero",
+    "retencao",
+    "telefone",
+    "tipoUnidade",
+    "tipoUnidadeCnes",
+    "turnoAtendimento",
+    "uf"
   ];
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
@@ -54,21 +66,21 @@ export default function Cras() {
     } else {
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-      getCras(latitude, longitude);
+      getPostosSaude(latitude, longitude);
       setLatitude(latitude);
       setLongitude(longitude);
     }
   }
 
-  async function getCras(latitude, longitude) {
+  async function getPostosSaude(latitude, longitude) {
     await api
       .get(
-        `/assistenciasocial/cras/latitude/${latitude}/longitude/${longitude}/raio/100`
+        `/estabelecimentos/latitude/${latitude}/longitude/${longitude}/raio/100`
       )
       .then(response => {
         setLoading(false);
-        setCrasLista(response.data);
-        setCrasPesquisa(response.data);
+        setPostosSaudeLista(response.data);
+        setPostosSaudePesquisa(response.data);
       })
       .catch(error => {
         setLoading(false);
@@ -84,7 +96,9 @@ export default function Cras() {
 
   function pesquisar(p) {
     setPesquisa(p);
-    setCrasLista(crasPesquisa.filter(createFilter(p, parametrosPesquisa)));
+    setPostosSaudeLista(
+      postosSaudePesquisa.filter(createFilter(p, parametrosPesquisa))
+    );
   }
 
   function abrirMapa(titulo, latitude, longitude) {
@@ -103,15 +117,19 @@ export default function Cras() {
       <StatusBar barStyle="light-content" />
 
       {!cardPesquisa ? (
-        <Header titulo="CRAS" pesquisa onPressPesquisa={showCardPesquisa} />
+        <Header
+          titulo="Postos de Saúde"
+          pesquisa
+          onPressPesquisa={showCardPesquisa}
+        />
       ) : (
         <Pesquisa
-          placeHolder="Pesquisar CRAS"
+          placeHolder="Pesquisar postos de saúde"
           valor={pesquisa}
           onChangeText={p => pesquisar(p)}
           onPressBackPesquisa={() => {
             showCardPesquisa();
-            getCras(latitude, longitude);
+            getPostosSaude(latitude, longitude);
           }}
         />
       )}
@@ -124,16 +142,20 @@ export default function Cras() {
         ) : (
           <FlatList
             showsVerticalScrollIndicator={false}
-            data={crasLista}
+            data={postosSaudeLista}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <CardCras
+              <CardPostosSaude
                 key={(item, index) => index.toString()}
-                nome={item.nomeCras}
-                endereco={`${item.tipoLogradouro} ${item.endereco}, ${item.numero} - ${item.nomeMunicipio}, ${item.uf}`}
+                nome={item.nomeFantasia}
+                endereco={`${item.logradouro}, ${item.numero}, ${item.bairro} - ${item.cidade}, ${item.uf}`}
+                telefone={item.telefone}
+                turnoAtendimento={item.turnoAtendimento}
                 latitude={item.lat}
                 longitude={item.long}
-                onPress={() => abrirMapa(item.nomeCras, item.lat, item.long)}
+                onPress={() =>
+                  abrirMapa(item.nomeFantasia, item.lat, item.long)
+                }
               />
             )}
             refreshControl={
@@ -141,8 +163,8 @@ export default function Cras() {
             }
             ListEmptyComponent={
               <View style={styles.viewListaVazia}>
-                <Text style={styles.textCrasNaoEncontrado}>
-                  Nenhum CRAS encontrado
+                <Text style={styles.textPostosSaudeNaoEncontrado}>
+                  Nenhum PostosSaude encontrado
                 </Text>
               </View>
             }
@@ -166,7 +188,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center"
   },
-  textCrasNaoEncontrado: {
+  textPostosSaudeNaoEncontrado: {
     justifyContent: "center",
     alignSelf: "center",
     fontSize: 18

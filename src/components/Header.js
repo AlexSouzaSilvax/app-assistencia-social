@@ -27,17 +27,17 @@ function Header({
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={{ flex: 2 }} />
+        <View />
       )}
 
-      <View style={{ flex: 2 }}>
+      <View style={{ flex: 2, alignSelf: "center" }}>
         <Text numberOfLines={1} style={styles.titulo}>
           {titulo}
         </Text>
       </View>
 
       {pesquisa ? (
-        <TouchableOpacity style={{ flex: 2 }} onPress={onPressPesquisa}>
+        <TouchableOpacity onPress={onPressPesquisa}>
           <Icon
             name={"search"}
             size={20}
@@ -46,7 +46,7 @@ function Header({
           />
         </TouchableOpacity>
       ) : (
-        <View style={{ flex: 2 }} />
+        <View />
       )}
     </View>
   );
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     paddingTop: 24
   },
   titulo: {
+    left: 22,
     fontSize: 28,
     fontWeight: "bold",
     color: colors.white,

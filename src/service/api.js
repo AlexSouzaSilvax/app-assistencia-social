@@ -1,8 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL:
-    "http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/assistenciasocial"
+  baseURL: "http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest"
 });
 
 export const KEY_API_GOOGLE_MAPS = "KEY_API_GOOGLE_MAPS";
