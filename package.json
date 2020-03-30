@@ -17,6 +17,7 @@
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+    "react-native-dialog": "^5.6.0",
     "react-native-gesture-handler": "~1.5.0",
     "react-native-open-map": "^3.0.2",
     "react-native-paper": "^3.6.0",

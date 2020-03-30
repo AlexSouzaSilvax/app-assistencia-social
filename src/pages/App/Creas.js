@@ -6,20 +6,23 @@ import {
   StyleSheet,
   SafeAreaView,
   FlatList,
-  RefreshControl
+  RefreshControl,
+  BackHandler,
+  Linking
 } from "react-native";
 import { Spinner } from "native-base";
 import { createFilter } from "react-native-search-filter";
 import OpenMap from "react-native-open-map";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
+import Dialog from "react-native-dialog";
 import Header from "../../components/Header";
 import Pesquisa from "../../components/Pesquisa";
 import CardCreas from "../../components/Card";
 import { api } from "../../service/api";
 import colors from "../../styles/colors";
 
-export default function Creas() {
+export default function Creas({ navigation }) {
   const [cardPesquisa, setCardPesquisa] = useState(false);
   const [pesquisa, setPesquisa] = useState();
   const [loading, setLoading] = useState();
@@ -42,6 +45,11 @@ export default function Creas() {
 
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
+
+  const [dialogEmailVisible, setDialogEmailVisible] = useState(false);
+  const [email, setEmail] = useState("");
+  const [nome, setNome] = useState("");
+  const [endereco, setEndereco] = useState("");
 
   useEffect(() => {
     getLocalizacao();
@@ -101,6 +109,30 @@ export default function Creas() {
     });
   }
 
+  function enviaMsgWhatsApp(nome, endereco) {
+    Linking.openURL(
+      `whatsapp://send?text=Olá, aqui está o endereço do *${nome}*\n\n${endereco}`
+    );
+  }
+
+  function enviaMsgEmail(email, nome, endereco) {
+    Linking.openURL(
+      `mailto:${email}?subject=Endereço: ${nome}&body=\nOlá,\n\nSegue abaixo o endereço do ${nome}\n\n\n${endereco}\n\n\n\nEnviado do aplicativo "Assistência Social".\n\n`
+    );
+  }
+
+  function limpaCampos() {
+    setEmail("");
+    setNome("");
+    setEndereco("");
+    setDialogEmailVisible(false);
+  }
+
+  BackHandler.addEventListener("hardwareBackPress", () => {
+    navigation.navigate("Creas");
+    return true;
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -125,31 +157,84 @@ export default function Creas() {
             <Spinner color={colors.primaryDarkColor} />
           </View>
         ) : (
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={creasLista}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <CardCreas
-                key={(item, index) => index.toString()}
-                nome={item.nomeCreas}
-                endereco={`${item.tipoLogradouro} ${item.logradouro}, ${item.numero} - ${item.bairro}, ${item.municipio} - ${item.uf}`}
-                latitude={item.lat}
-                longitude={item.long}
-                onPress={() => abrirMapa(item.nomeCreas, item.lat, item.long)}
-              />
-            )}
-            refreshControl={
-              <RefreshControl refreshing={loading} onRefresh={getLocalizacao} />
-            }
-            ListEmptyComponent={
-              <View style={styles.viewListaVazia}>
-                <Text style={styles.textCrasNaoEncontrado}>
-                  Nenhum CREAS encontrado
-                </Text>
+          <>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={creasLista}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <CardCreas
+                  key={(item, index) => index.toString()}
+                  nome={item.nomeCreas}
+                  endereco={`${item.tipoLogradouro} ${item.logradouro}, ${item.municipio}, ${item.uf}`} //`${item.tipoLogradouro} ${item.logradouro}, ${item.numero} - ${item.bairro}, ${item.municipio} - ${item.uf}`
+                  latitude={item.lat}
+                  longitude={item.long}
+                  onPressMapa={() =>
+                    abrirMapa(item.nomeCreas, item.lat, item.long)
+                  }
+                  onPressWhatsApp={() =>
+                    enviaMsgWhatsApp(
+                      item.nomeCreas,
+                      `${item.tipoLogradouro} ${item.logradouro}, ${item.municipio}, ${item.uf}`
+                    )
+                  }
+                  onPressEmail={() => {
+                    setNome(item.nomeCreas);
+                    setEndereco(
+                      `${item.tipoLogradouro} ${item.logradouro}, ${item.numero} - ${item.bairro}, ${item.municipio} - ${item.uf}`
+                    );
+                    setDialogEmailVisible(true);
+                  }}
+                />
+              )}
+              refreshControl={
+                <RefreshControl
+                  refreshing={loading}
+                  onRefresh={getLocalizacao}
+                />
+              }
+              ListEmptyComponent={
+                <View style={styles.viewListaVazia}>
+                  <Text style={styles.textCrasNaoEncontrado}>
+                    Nenhum CREAS encontrado
+                  </Text>
+                </View>
+              }
+            />
+
+            <Dialog.Container
+              visible={dialogEmailVisible}
+              onBackButtonPress={() => setDialogEmailVisible(false)}
+            >
+              <Text style={styles.textPopUpValor}>Email</Text>
+
+              <View style={styles.viewPopUpInput}>
+                <Dialog.Input
+                  style={styles.inputEmailPopUp}
+                  placeholder={"Email do destinatário"}
+                  keyboardType={"email-address"}
+                  placeholderTextColor={"#ddd"}
+                  numberOfLines={1}
+                  autoFocus={true}
+                  value={email}
+                  onChangeText={e => setEmail(e)}
+                ></Dialog.Input>
               </View>
-            }
-          />
+
+              <Dialog.Button label="Cancelar" onPress={() => limpaCampos()} />
+              <Dialog.Button
+                label="Enviar"
+                onPress={() => {
+                  if (email) {
+                    enviaMsgEmail(email, nome, endereco);
+                  } else {
+                    limpaCampos();
+                    Alert.alert("Email é obrigatório");
+                  }
+                }}
+              />
+            </Dialog.Container>
+          </>
         )}
       </View>
     </SafeAreaView>
@@ -159,7 +244,7 @@ export default function Creas() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primaryColor
+    backgroundColor: colors.primaryDarkColor
   },
   body: {
     flex: 1,
@@ -177,5 +262,21 @@ const styles = StyleSheet.create({
   viewListaVazia: {
     marginTop: 20,
     backgroundColor: colors.primaryLightColor
+  },
+  textPopUpValor: {
+    alignSelf: "center",
+    fontWeight: "bold",
+    fontSize: 18
+  },
+  viewPopUpInput: {
+    flexDirection: "row",
+    alignSelf: "center",
+    paddingTop: 10
+  },
+  inputEmailPopUp: {
+    fontSize: 18,
+    color: "#444",
+    padding: 3,
+    width: 220
   }
 });

@@ -1,11 +1,8 @@
 import React from "react";
 
-import { createAppContainer, createSwitchNavigator } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
+import { createAppContainer } from "react-navigation";
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 import IconFontAwesome from "react-native-vector-icons/FontAwesome";
-
-import Load from "./pages/Load";
 
 import Cras from "./pages/App/Cras";
 import Creas from "./pages/App/Creas";
@@ -14,73 +11,57 @@ import PostosSaude from "./pages/App/PostosSaude";
 import colors from "./styles/colors";
 
 const Routes = createAppContainer(
-  createStackNavigator({
-    Load: {
-      screen: Load,
-      navigationOptions: {
-        headerShown: false
+  createMaterialBottomTabNavigator(
+    {
+      Cras: {
+        screen: Cras,
+        navigationOptions: {
+          title: "CRAS",
+          tabBarIcon: ({ focused }) => (
+            <IconFontAwesome
+              name="user"
+              size={focused ? 24 : 22}
+              color={focused ? colors.primaryColor : colors.cinza}
+            />
+          )
+        }
+      },
+      Creas: {
+        screen: Creas,
+        navigationOptions: {
+          title: "CREAS",
+          tabBarIcon: ({ focused }) => (
+            <IconFontAwesome
+              name="users"
+              size={focused ? 24 : 22}
+              color={focused ? colors.primaryColor : colors.cinza}
+            />
+          )
+        }
+      },
+      PostosSaude: {
+        screen: PostosSaude,
+        navigationOptions: {
+          title: "POSTOS DE SAÚDE",
+          tabBarIcon: ({ focused }) => (
+            <IconFontAwesome
+              name="hospital-o"
+              size={focused ? 24 : 22}
+              color={focused ? colors.primaryColor : colors.cinza}
+            />
+          )
+        }
       }
     },
-    App: {
-      screen: createMaterialBottomTabNavigator(
-        {
-          Cras: {
-            screen: Cras,
-            navigationOptions: {
-              title: "CRAS",
-              tabBarIcon: ({ focused }) => (
-                <IconFontAwesome
-                  name="users"
-                  size={focused ? 24 : 22}
-                  color={focused ? colors.primaryColor : colors.cinza}
-                />
-              )
-            }
-          },
-          Creas: {
-            screen: Creas,
-            navigationOptions: {
-              title: "CREAS",
-              tabBarIcon: ({ focused }) => (
-                <IconFontAwesome
-                  name="users"
-                  size={focused ? 24 : 22}
-                  color={focused ? colors.primaryColor : colors.cinza}
-                />
-              )
-            }
-          },
-          PostosSaude: {
-            screen: PostosSaude,
-            navigationOptions: {
-              title: "POSTOS DE SAÚDE",
-              tabBarIcon: ({ focused }) => (
-                <IconFontAwesome
-                  name="hospital-o"
-                  size={focused ? 24 : 22}
-                  color={focused ? colors.primaryColor : colors.cinza}
-                />
-              )
-            }
-          }
-        },
-        {
-          initialRouteName: "Cras",
-          barStyle: {
-            backgroundColor: colors.primaryLightColor
-          },
-          activeColor: colors.primaryColor,
-          inactiveColor: colors.cinza
-        }
-      ),
-      navigationOptions: ({ navigation }) => ({
-        headerShown: false
-      })
-    },
-    navigationOptions: ({ navigation }) => ({
-      headerShown: false
-    })
-  })
+    {
+      initialRouteName: "Cras",
+      barStyle: {
+        backgroundColor: colors.primaryLightColor
+      },
+      activeColor: colors.primaryColor,
+      inactiveColor: colors.cinza
+    }
+  )
 );
 
 export default Routes;

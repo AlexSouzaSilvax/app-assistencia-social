@@ -1,36 +1,27 @@
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Platform
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import IconIonicons from "react-native-vector-icons/Ionicons";
+import IconAntDesign from "react-native-vector-icons/AntDesign";
 import { withNavigation } from "react-navigation";
 import colors from "../styles/colors";
 
-function Header({
-  navigation,
-  titulo,
-  voltar,
-  onPressVoltar,
-  pesquisa,
-  onPressPesquisa
-}) {
+function Header({ titulo, pesquisa, onPressPesquisa }) {
   return (
     <View style={styles.header}>
-      {voltar ? (
-        <View style={{ flex: 2 }}>
-          <TouchableOpacity onPress={onPressVoltar}>
-            <IconIonicons
-              name={"ios-arrow-back"}
-              size={25}
-              color={colors.white}
-              style={styles.iconVoltar}
-            />
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View />
-      )}
+      <IconAntDesign
+        name={Platform.OS === "android" ? "android1" : "apple1"}
+        size={20}
+        color={colors.white}
+        style={styles.iconPlatform}
+      />
 
-      <View style={{ flex: 2, alignSelf: "center" }}>
+      <View style={{ flex: 1, alignSelf: "center" }}>
         <Text numberOfLines={1} style={styles.titulo}>
           {titulo}
         </Text>
@@ -59,12 +50,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: colors.primaryColor,
     alignItems: "center",
-    height: 60,
-    paddingTop: 24
+    ...Platform.select({
+      ios: {
+        paddingTop: 0,
+        height: 45
+      },
+      android: {
+        paddingTop: 24,
+        height: 60
+      }
+    })
   },
   titulo: {
-    left: 22,
-    fontSize: 28,
+    left: 10,
+    fontSize: 26,
     fontWeight: "bold",
     color: colors.white,
     alignSelf: "center"
@@ -73,9 +72,16 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     paddingEnd: 15
   },
-  iconVoltar: {
+  iconPlatform: {
     alignSelf: "flex-start",
-    paddingStart: 15,
-    paddingTop: 5
+    paddingStart: 10,
+    ...Platform.select({
+      ios: {
+        paddingTop: 11
+      },
+      android: {
+        paddingTop: 8
+      }
+    })
   }
 });

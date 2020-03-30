@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Dimensions, StyleSheet } from "react-native";
+import { View, Dimensions, StyleSheet, Platform } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Input } from "native-base";
@@ -40,16 +40,31 @@ export default withNavigation(Pesquisa);
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.primaryColor,
-    height: 80,
+    ...Platform.select({
+      ios: {
+        height: 60
+      },
+      android: {
+        height: 80
+      }
+    }),
     justifyContent: "center"
   },
   cardPesquisa: {
     flexDirection: "row",
-    height: 40,
+    height: 45,
     width: Dimensions.get("screen").width - 15,
     backgroundColor: colors.white,
     alignSelf: "center",
     borderRadius: 4,
-    marginTop: 24
+    //marginTop: 24
+    ...Platform.select({
+      ios: {
+        marginTop: 0
+      },
+      android: {
+        marginTop: 24
+      }
+    })
   }
 });

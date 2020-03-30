@@ -5,9 +5,12 @@ import {
   TouchableOpacity,
   Text,
   Dimensions,
-  Image
+  Image,
+  Platform
 } from "react-native";
 import { withNavigation } from "react-navigation";
+import IconFontAwesome from "react-native-vector-icons/FontAwesome";
+import IconIonicons from "react-native-vector-icons/Ionicons";
 import { KEY_API_GOOGLE_MAPS } from "../service/api";
 import colors from "../styles/colors";
 
@@ -18,7 +21,9 @@ function Card({
   turnoAtendimento,
   latitude,
   longitude,
-  onPress
+  onPressMapa,
+  onPressWhatsApp,
+  onPressEmail
 }) {
   return (
     <View style={styles.card}>
@@ -42,14 +47,33 @@ function Card({
       ) : (
         <></>
       )}
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity onPress={onPressMapa}>
         <Image
           style={styles.mapa}
+          defaultSource={require("../../assets/loading.gif")}
           source={{
             uri: `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=18&size=600x300&maptype=hybrid&markers=color:red%7Clabel:L%7C${latitude},${longitude}&key=${KEY_API_GOOGLE_MAPS}`
           }}
         />
       </TouchableOpacity>
+      <View style={{ flexDirection: "row", alignSelf: "flex-end" }}>
+        <TouchableOpacity onPress={onPressEmail}>
+          <IconIonicons
+            name={"ios-mail"}
+            size={23}
+            color={colors.primaryColor}
+            style={styles.email}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onPressWhatsApp}>
+          <IconFontAwesome
+            name={"whatsapp"}
+            size={20}
+            color={colors.primaryColor}
+            style={styles.whatsApp}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -62,7 +86,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("screen").width - 20,
     margin: 5,
     borderRadius: 4,
-    backgroundColor: colors.primaryLightColor,
+    backgroundColor: colors.white,
     paddingTop: 5
   },
   textTitulo: {
@@ -72,10 +96,10 @@ const styles = StyleSheet.create({
     margin: 1
   },
   mapa: {
-    width: Dimensions.get("screen").width - 20,
-    height: 150,
+    width: Dimensions.get("screen").width - 40,
+    height: 120,
     alignSelf: "center",
-    borderRadius: 4,
+    borderRadius: 6,
     marginTop: 10
   },
   textNome: {
@@ -90,5 +114,17 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginStart: 5,
     marginTop: 3
+  },
+  whatsApp: {
+    alignSelf: "flex-end",
+    paddingEnd: 20,
+    paddingTop: 5,
+    marginVertical: 3
+  },
+  email: {
+    alignSelf: "flex-end",
+    paddingEnd: 15,
+    paddingTop: 4,
+    marginVertical: 3
   }
 });
